@@ -1,124 +1,106 @@
-# 🔥 Algerian Forest Fires — FWI Prediction
+# 🔥 Forest Fire FWI Prediction
 
-An end-to-end **Machine Learning + Flask web application** that predicts the **Fire Weather Index (FWI)** using meteorological and fire-weather data from the Algerian Forest Fires dataset.
+A Machine Learning project that predicts the **Fire Weather Index (FWI)** using meteorological and fire-weather features from the Algerian Forest Fires dataset.
 
-The project covers the complete ML workflow — from **data cleaning, EDA, feature engineering, model comparison, and hyperparameter tuning to model deployment through Flask**.
+The project includes data cleaning, exploratory data analysis, feature engineering, model comparison, Ridge Regression, and a Flask web application for making predictions.
 
-## 📌 Overview
+---
 
-The **Fire Weather Index (FWI)** is a numerical indicator used to represent fire intensity based on weather and fuel-moisture conditions.
+## 📌 Project Overview
 
-This project uses historical observations from two regions of Algeria:
+Forest fires are influenced by several weather and environmental conditions. This project uses historical fire-weather data to predict the **Fire Weather Index (FWI)**, which is a continuous numerical value.
 
-* **Bejaia**
-* **Sidi Bel-Abbes**
+This is a **Regression problem** because the target variable, FWI, is numerical.
 
-The application takes weather and fire-weather parameters as input and predicts the corresponding **FWI value** using a trained **Ridge Regression** model.
-
-### Prediction Flow
-
-```text
-Meteorological & Fire-Weather Data
-              ↓
-        Data Preprocessing
-              ↓
-              EDA
-              ↓
-       Feature Engineering
-              ↓
-         Train-Test Split
-              ↓
-        Feature Scaling
-              ↓
-     Model Comparison
-              ↓
-       Ridge Regression
-              ↓
-       Saved ML Model
-              ↓
-        Flask Web App
-              ↓
-         User Input
-              ↓
-        Predicted FWI
-```
-
-## 🎯 What Does This Project Predict?
-
-The project predicts:
+### 🎯 Target
 
 **Fire Weather Index (FWI)**
 
-FWI is a continuous numerical value, so this is a **Regression problem**, not a classification problem.
+### 📥 Input Features
 
-The model uses the following input features:
+* Temperature
+* Relative Humidity (RH)
+* Wind Speed (Ws)
+* Rain
+* Fine Fuel Moisture Code (FFMC)
+* Duff Moisture Code (DMC)
+* Initial Spread Index (ISI)
 
-| Feature     | Description                      |
-| ----------- | -------------------------------- |
-| Temperature | Maximum daytime temperature (°C) |
-| RH          | Relative Humidity (%)            |
-| Ws          | Wind Speed (km/h)                |
-| Rain        | Precipitation (mm)               |
-| FFMC        | Fine Fuel Moisture Code          |
-| DMC         | Duff Moisture Code               |
-| ISI         | Initial Spread Index             |
-
-**Target variable: `FWI`**
+---
 
 ## 📊 Dataset
 
-The dataset contains observations collected between **June 2012 and September 2012** from two regions in Algeria:
+The project uses the **Algerian Forest Fires Dataset**.
 
-* Bejaia Region — Northeast Algeria
-* Sidi Bel-Abbes Region — Northwest Algeria
+The dataset contains observations collected between **June 2012 and September 2012** from two regions of Algeria:
 
-The project uses a cleaned and preprocessed version of the Algerian Forest Fires dataset.
+* Bejaia Region
+* Sidi Bel-Abbes Region
 
-## 🧠 Machine Learning Workflow
+The original dataset was cleaned and prepared before model training.
 
-### 1. Data Cleaning
+---
 
-The dataset was cleaned and prepared for machine learning by:
+## 🔄 Machine Learning Workflow
 
-* Removing unwanted whitespace
-* Resolving misplaced header rows
-* Handling missing values
-* Handling non-numeric values
-* Converting columns to appropriate numeric types
-* Preparing the final dataset for modelling
+```text
+Raw Dataset
+     ↓
+Data Cleaning
+     ↓
+Exploratory Data Analysis
+     ↓
+Feature Engineering
+     ↓
+Correlation / Multicollinearity Analysis
+     ↓
+Train-Test Split
+     ↓
+Feature Scaling
+     ↓
+Model Training
+     ↓
+Model Comparison
+     ↓
+Ridge Regression
+     ↓
+Model & Scaler Saved
+     ↓
+Flask Web Application
+     ↓
+FWI Prediction
+```
 
-### 2. Exploratory Data Analysis
+---
 
-EDA was performed to understand:
+## 🧹 Data Preprocessing
 
-* Feature distributions
-* Relationships between variables
-* Correlations
-* Relationships between input features and FWI
-* Multicollinearity between features
+The dataset was prepared through several preprocessing steps:
 
-### 3. Feature Engineering
+* Removed unnecessary whitespace
+* Handled misplaced headers
+* Converted columns to appropriate data types
+* Handled missing and non-numeric values
+* Performed exploratory data analysis
+* Checked feature correlations
+* Analyzed multicollinearity
+* Selected relevant features
+* Applied feature scaling using `StandardScaler`
 
-The relevant meteorological and fire-weather features were selected for model training.
+---
 
-Feature scaling was performed using **StandardScaler** before training the regression model.
+## 🤖 Models Used
 
-### 4. Model Comparison
-
-Multiple regression algorithms were evaluated:
+The following regression algorithms were explored and compared:
 
 * Linear Regression
 * Ridge Regression
 * Lasso Regression
 * ElasticNet Regression
 
-After comparison, **Ridge Regression** was selected for the final model.
+Because of multicollinearity among some features, **Ridge Regression** was selected for the final model.
 
-Ridge Regression was useful because several FWI-related features have strong relationships with each other, creating potential multicollinearity.
-
-### 5. Model Serialization
-
-The trained model and scaler were saved using Pickle:
+The trained model and scaler are saved using Python's `pickle` functionality:
 
 ```text
 models/
@@ -126,32 +108,37 @@ models/
 └── scaler.pkl
 ```
 
-These saved artifacts are loaded by the Flask application during prediction.
+---
 
 ## 🌐 Flask Web Application
 
-The Machine Learning model is integrated into a Flask web application.
+A Flask web application was created to allow users to enter the required weather parameters and receive an FWI prediction.
 
-### Routes
+### Application Flow
 
-#### `/`
+```text
+User enters weather data
+        ↓
+Flask receives input
+        ↓
+Input is converted to numerical values
+        ↓
+StandardScaler transforms the input
+        ↓
+Ridge Regression model predicts FWI
+        ↓
+Predicted FWI displayed to user
+```
 
-Displays the landing/home page.
+### Flask Routes
 
-#### `/predictdata`
+| Route          | Method | Purpose                          |
+| -------------- | ------ | -------------------------------- |
+| `/`            | GET    | Displays the home page           |
+| `/predictdata` | GET    | Displays prediction form         |
+| `/predictdata` | POST   | Processes input and predicts FWI |
 
-Displays the FWI prediction form.
-
-#### `POST /predictdata`
-
-The application:
-
-1. Receives user input.
-2. Converts the input into the required format.
-3. Applies the saved `StandardScaler`.
-4. Loads the trained Ridge Regression model.
-5. Generates the predicted FWI.
-6. Displays the prediction on the web page.
+---
 
 ## 📁 Project Structure
 
@@ -162,9 +149,6 @@ forestfire-main/
 │   └── python.config
 │
 ├── .vscode/
-│   ├── extensions.json
-│   ├── settings.json
-│   └── tasks.json
 │
 ├── dataset/
 │   └── Algerian_forest_fires_cleaned_dataset.csv
@@ -186,43 +170,42 @@ forestfire-main/
 └── README.md
 ```
 
-## 🛠️ Tech Stack
+---
+
+## 🛠️ Technologies Used
 
 ### Programming Language
 
 * Python
 
-### Data Analysis
+### Machine Learning
 
-* Pandas
+* Scikit-learn
 * NumPy
+* Pandas
 
-### Data Visualization
+### Data Analysis & Visualization
 
 * Matplotlib
 * Seaborn
 
-### Machine Learning
-
-* Scikit-Learn
-* Linear Regression
-* Ridge Regression
-* Lasso Regression
-* ElasticNet
-* StandardScaler
-
-### Web Development
+### Web Framework
 
 * Flask
-* Jinja2
-* HTML
-* CSS
 
-### Deployment
+### Model Persistence
 
-* AWS Elastic Beanstalk
+* Pickle
 
-## ⚙️ Local Setup
+### Development
+
+* Jupyter Notebook
+* VS Code
+* Git & GitHub
+
+---
+
+## 🚀 Run the Project Locally
 
 ### 1. Clone the repository
 
@@ -233,90 +216,78 @@ cd forestfire-regression-project-
 
 ### 2. Create a virtual environment
 
+```bash
+python -m venv venv
+```
+
+### 3. Activate the virtual environment
+
 #### Windows
 
 ```bash
-python -m venv venv
 venv\Scripts\activate
 ```
 
-#### macOS/Linux
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install dependencies
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## ▶️ Run the Application
-
-Start the Flask application:
+### 5. Run the Flask application
 
 ```bash
 python application.py
 ```
 
-The application will run at:
+### 6. Open in browser
 
 ```text
 http://127.0.0.1:5000/
 ```
 
-Open the prediction interface at:
+---
 
-```text
-http://127.0.0.1:5000/predictdata
-```
+## 📌 Deployment
 
-## ☁️ AWS Elastic Beanstalk
+The project is currently configured as a Flask application and can be deployed to a cloud hosting platform in the future.
 
-The project includes configuration for deployment using **AWS Elastic Beanstalk**.
+**Cloud deployment has not been completed yet.**
 
-The WSGI entry point is configured as:
+The `.ebextensions/python.config` file is included as deployment configuration for potential **AWS Elastic Beanstalk** deployment, but the application is **not currently deployed on AWS**.
 
-```text
-application:application
-```
+---
 
-The project includes:
+## 🎓 What I Learned
 
-```text
-.ebextensions/
-└── python.config
-```
+Through this project, I worked on:
 
-This configuration allows the Flask application to be deployed on an AWS Elastic Beanstalk Python environment.
-
-## 🔑 Key Learning Outcomes
-
-Through this project, the following concepts were implemented:
-
-* End-to-end Machine Learning workflow
 * Data cleaning and preprocessing
-* Exploratory Data Analysis
+* Exploratory Data Analysis (EDA)
 * Feature engineering
 * Correlation analysis
 * Multicollinearity
 * Feature scaling
-* Regression model comparison
-* Ridge Regression
-* Model serialization
-* Flask model deployment
-* AWS Elastic Beanstalk deployment configuration
+* Regression algorithms
+* Ridge, Lasso and ElasticNet
+* Model comparison
+* Saving trained ML models
+* Building a Flask ML application
+* Connecting a trained ML model with a web interface
+* Git and GitHub project management
+
+---
 
 ## 👨‍💻 Author
 
 **Samir Shaw**
 
-B.Tech — Computer Science & Engineering
+B.Tech Computer Science & Engineering
 
-GitHub: [Samir-Shaw](https://github.com/Samir-Shaw)
+GitHub: `Samir-Shaw`
 
 ---
 
-⭐ If you found this project useful, consider giving the repository a star.
+## ⭐ Project Goal
+
+The main goal of this project is to demonstrate an end-to-end **Machine Learning workflow**, starting from raw data preprocessing and analysis to model training and integration with a Flask web application for real-time FWI prediction.
